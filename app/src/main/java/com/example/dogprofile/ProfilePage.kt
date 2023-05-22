@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -27,66 +26,77 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 
 @Composable
 fun ProfilePage() {
     Card(
-        elevation = CardDefaults.elevatedCardElevation(),
-        modifier = Modifier
+        elevation = CardDefaults.elevatedCardElevation(), modifier = Modifier
             .fillMaxSize()
             .padding(
                 top = 100.dp, bottom = 100.dp, start = 16.dp, end = 16.dp
             )
-            .border(
-                width = 2.dp, Color.White, shape = RoundedCornerShape(
-                    30.dp
-                )
-            )
+
     ) {
         // Content of our card - Including Dog Image, description, followers etc.
-        Column(
-            Modifier
-                .verticalScroll(rememberScrollState())
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+        ConstraintLayout() {
+
+            val (image, nameText, detailText, rowStats, buttonFollow, messageButton) = createRefs()
             Image(
                 painter = painterResource(id = R.drawable.doge),
                 contentDescription = "doge",
                 modifier = Modifier
                     .size(200.dp)
                     .clip(CircleShape)
-                    .border(width = 2.dp, Color.Red, shape = CircleShape),
+                    .border(width = 2.dp, Color.Red, shape = CircleShape)
+                    .constrainAs(image) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
                 contentScale = ContentScale.Crop
             )
-            Text(text = "Meme doge")
-            Text(text = "Webs")
+            Text(text = "Meme doge", modifier = Modifier.constrainAs(nameText) {
+                top.linkTo(image.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            })
+            Text(text = "Webs", modifier = Modifier.constrainAs(detailText) {
+                top.linkTo(nameText.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            })
 
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
+            Row(horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
-            ) {
+                    .constrainAs(rowStats) {
+                        top.linkTo(detailText.bottom)
+                    }) {
                 ProfileStats(count = "150M", title = "Followers")
                 ProfileStats(count = "100", title = "Following")
                 ProfileStats(count = "12", title = "Posts")
             }
 
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = "Follow user")
-                }
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = "Direct message")
-                }
+            Button(onClick = { /*TODO*/ }, Modifier.constrainAs(buttonFollow) {
+                top.linkTo(rowStats.bottom, margin = 16.dp)
+                start.linkTo(parent.start)
+                end.linkTo(messageButton.start)
+                width = Dimension.wrapContent
+            }) {
+                Text(text = "Follow user")
             }
+            Button(onClick = { /*TODO*/ }, Modifier.constrainAs(messageButton) {
+                top.linkTo(rowStats.bottom, margin = 16.dp)
+                start.linkTo(buttonFollow.end)
+                end.linkTo(parent.end)
+                width = Dimension.wrapContent
+            }) {
+                Text(text = "Direct message")
+            }
+
         }
     }
 }
