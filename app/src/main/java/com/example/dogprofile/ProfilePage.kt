@@ -9,9 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -37,12 +35,14 @@ fun ProfilePage() {
             .padding(
                 top = 100.dp, bottom = 100.dp, start = 16.dp, end = 16.dp
             )
-
     ) {
         // Content of our card - Including Dog Image, description, followers etc.
-        ConstraintLayout() {
+        ConstraintLayout {
 
             val (image, nameText, detailText, rowStats, buttonFollow, messageButton) = createRefs()
+
+            val guideline = createGuidelineFromTop(0.3f)
+
             Image(
                 painter = painterResource(id = R.drawable.doge),
                 contentDescription = "doge",
@@ -51,7 +51,7 @@ fun ProfilePage() {
                     .clip(CircleShape)
                     .border(width = 2.dp, Color.Red, shape = CircleShape)
                     .constrainAs(image) {
-                        top.linkTo(parent.top)
+                        top.linkTo(guideline)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
